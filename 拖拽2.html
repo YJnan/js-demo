@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    body,ul{
+        margin: 0;
+    }
+    ul{
+        padding: 0;
+    }
+    li{
+        list-style: none;
+    }
+    .nav{
+        width: 1280px;
+        height: 800px;
+        border: 1px solid #ccc;
+        margin: 100px auto;
+    }
+    ul{
+
+        position: relative;
+        width:100%;
+        height: 100%;
+    }
+    li{
+        width: 400px;
+        height: 240px;
+        margin:20px 0 0 20px;
+        float:left;
+        border-radius: 20px;
+    }
+    li img{
+        width:100%;
+        height: 100%;
+        border-radius: 20px;
+    }
+</style>
+<body>
+<div class="nav" id="nav">
+    <ul>
+        <li><img src="img/01.jpg" alt=""></li>
+        <li><img src="img/02.jpg" alt=""></li>
+        <li><img src="img/03.jpg" alt=""></li>
+        <li><img src="img/04.jpg" alt=""></li>
+        <li><img src="img/05.jpg" alt=""></li>
+        <li><img src="img/06.jpg" alt=""></li>
+        <li><img src="img/07.jpg" alt=""></li>
+        <li><img src="img/08.jpg" alt=""></li>
+        <li><img src="img/09.jpg" alt=""></li>
+    </ul>
+</div>
+<script>
+    /*
+     1:将li变为定位布局
+     1.1:获取li元素
+     1.2:获取灭个li元素的位置值
+     1.3:把li元素设置成定位
+     1.4:给li元素设置left和top
+     2:实现li拖拽
+     元素水平移动的距离 = x2-x1
+     元素垂直移动的距离 = y2-y1
+     元素的新位置 = 元素的旧位置+元素移动的距离
+     2.1:获取鼠标点击的位置x1，y1
+     2.2:获取当前点中元素的旧位置
+     2.3:获取鼠标移动的位置
+     2.4:计算元素新位置
+     2.5:设置元素新的位置
+     */
+    var aLi = document.getElementsByTagName("li");
+    var oNav =document.getElementById("nav");
+    var liP = [];
+    for(let i = 0,len =aLi.length; i<len; i++){
+        liP.push([aLi[i].offsetTop,aLi[i].offsetLeft]);
+        setTimeout(function(){
+            aLi[i].style.position = "absolute";
+            aLi[i].style.top = liP[i][0]+"px";
+            aLi[i].style.left = liP[i][1]+"px";
+            aLi[i].style.margin = 0;
+        },0)
+    }
+    oNav.addEventListener("mousedown",drag);
+    document.addEventListener("mousemove",drag);
+    document.addEventListener("mouseup",drag);
+    var zIndex = 1;
+    var toggle = false;
+    var data={
+        x1:0,
+        y1:0,
+        startX:0,
+        startY:0,
+        ele:null,
+        goalEle:null
+    };
+    function drag(){
+        var ev=window.event||ev;
+        ev.preventDefault();
+        switch (ev.type){
+            case "mousedown":
+            if(ev.target.parentNode.tagName==="LI"){
+                toggle=true;
+                data.ele = ev.target.parentNode;
+                data.ele.style.zIndex = zIndex++;
+                data.x1 = ev.clientX;
+                data.y1 = ev.clientY;
+                data.startX = data.ele.offsetLeft;
+                data.startY = data.ele.offsetTop;
+            }break;
+            case "mousemove":
+                if(toggle){
+                    var x2=ev.clientX;
+                    var y2=ev.clientY;
+                    var endX=data.startX+x2-data.x1;
+                    var endY=data.startY+y2-data.y1;
+                    data.ele.style.top=endY+"px";
+                    data.ele.style.left=endX+"px";
+                    var xR=x2-oNav.offsetLeft;
+                    var yR=y2-oNav.offsetTop;
+                    for(var n=0,len=aLi.length;n<len;n++){
+                        aLi[n].style.transform="";
+                        aLi[n].style.boxShadow="";
+                        if(
+                            data.ele!=aLi[n]&&
+                            xR>aLi[n].offsetLeft&&
+                            xR<aLi[n].offsetLeft+400&&
+                            yR>aLi[n].offsetTop&&
+                            yR<aLi[n].offsetTop+240
+                        ){
+                            data.goalEle=aLi[n];
+                            data.goalEle.style.transform="scale(1.05)";
+                            data.goalEle.style.boxShadow="0px 0px 5px #666";
+                        }
+                    }
+                }
+                break;
+            case  "mouseup":
+                toggle=false;
+                if(data.goalEle){
+                    data.ele.style.top = data.goalEle.offsetTop+"px";
+                    data.ele.style.left = data.goalEle.offsetLeft+"px";
+                    data.goalEle.style.top = data.startY+"px";
+                    data.goalEle.style.left = data.startX+"px";
+                    data.goalEle.style.transform = "";
+                    data.goalEle.style.boxShadow = "";
+                    data.goalEle=null;
+
+                }break;
+        }
+    }
+</script>
+</body>
+</html>
