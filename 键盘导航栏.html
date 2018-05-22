@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+	*{margin:0;padding:0;}
+	a{text-decoration: none;}
+	kbd{
+		border: 1px solid red;
+		display: inline-block;
+		width: 4em;
+		height: 4em;
+		text-transform: uppercase;
+		position: relative;
+	}
+	main{
+		text-align: center;
+	}
+	kbd > button{
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		display: none;
+	}
+	kbd:hover > button{
+		display: inline-block;
+	}
+	#aMain{
+		display: inline-block;
+	}
+	#aMain div:nth-child(2){
+		margin-left: 2em;
+	}
+	#aMain div:nth-child(3){
+		margin-left: 4em;
+	}
+</style>
+</head>
+<body>
+	<header></header>
+	<main>
+		<div class="nav" id="aMain"></div>
+	</main>
+	<footer></footer>
+	<script>
+		var arr = [
+			['q','w','e','r','t','y','u','i','o','p'],
+			['a','s','d','f','g','h','j','k','l'],
+			['z','x','c','v','b','n','m']
+		];
+
+		var arrUrl = {
+			q:'qq.com',
+			b:'bilibili.com'
+		};
+
+		var hashInLocalStorage = JSON.parse(localStorage.getItem('zzz')|| 'null');
+		 if(hashInLocalStorage){
+        hash = hashInLocalStorage
+    }
+
+		for(var i = 0,len=arr.length;i < len; i++){
+			aDiv = document.createElement('div');
+			aMain.appendChild (aDiv);
+			var row = arr[i];
+			for(var j = 0;j < row.length;j++){
+				aKbd = document.createElement('kbd');
+				aKbd.textContent = row[j];
+				aButton = document.createElement('button');
+				aButton.textContent = '编辑';
+				aButton.id = row[j];
+				aButton.onclick = function(ev){
+					key = ev['target']['id'];
+					cmp = prompt('输入一个网址');
+					hash[key] = cmp;
+					localStorage.setItem('zzz',JSON.stringify(hash));
+
+				}
+				aDiv.appendChild(aKbd);
+			}
+		}
+
+		document.onkeypress = function(ev){
+			key = ev['arr'];
+			website = arrUrl[key];
+			window.open('https://'+website,'_blank')
+		}
+	</script>
+</body>
+</html>
